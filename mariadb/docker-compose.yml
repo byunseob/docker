@@ -1,0 +1,21 @@
+version: '3.1'
+services:
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./my.cnf:/etc/mysql/my.cnf
+      - mysqldata:/root/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - marianet
+
+volumes:
+  mysqldata:
+    driver: local
+
+networks:
+  marianet:

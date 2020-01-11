@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  redis-master:
+    image: redis
+    container_name: redis-master
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - /home/ec2-user/docker/redis/data:/data
+    networks:
+      - redisnet
+    ports:
+      - 6379:6379
+    sysctls:
+      net.core.somaxconn: 4084
+    ulimits:
+      nproc: 65536
+      nofile:
+        soft: 65536
+        hard: 65536
+networks:
+  redisnet:

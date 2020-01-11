@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $YOURNAME
+      MONGO_INITDB_ROOT_PASSWORD: $YOUR-PASSWORD
+    volumes:
+      - mongo:/data/db
+    networks:
+      - mongodbnet
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - mongodbnet
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: $YOURNAME
+      ME_CONFIG_MONGODB_ADMINPASSWORD: $YOUR-PASSWORD
+
+networks:
+  mongodbnet:
+
+volumes:
+  mongo:
