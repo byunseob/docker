@@ -7,7 +7,7 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
-      - /home/ec2-user/docker/redis/data:/data
+      - redisdata:/data
     networks:
       - redisnet
     ports:
@@ -19,5 +19,11 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    restart: always
+
+volumes:
+  redisdata:
+    driver: local
+
 networks:
   redisnet:
