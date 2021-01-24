@@ -1,0 +1,32 @@
+version: '2.1'
+# docker-compose 버전입니다. 작성일 기준으로 3.0을 권장하지만 아직 2.1을 쓰고 있네요.
+# 서비스는 `postgres`와 `webserver` 두개로 구성되어 있습니다.
+
+services:
+  postgres:
+    image: postgres:9.6                 # db는 postgres 공식 이미지를 가져옵니다.
+    environment: # db 구성에 필요한 값들을 넣어줍니다.
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+
+  webserver: # 여기서 부터 airflow 네요.
+    image: puckel/docker-airflow:1.10.3 # puckel 계정 아래 있는 이미지 사용
+    restart: always                     # 컨테이너 중단된 경우, 자동으로 재시작 해주는 옵션
+    depends_on:
+      - postgres                      # postgres를 db로 사용하니까 의존성 설정을 해줍니다.
+    environment:
+      - LOAD_EX=n                     # 여기는 이미지를 구성할때 설정한 환경변수를 넣어줍니다.
+      - EXECUTOR=Local                # 아래에서 이미지 구성 파일을 보며 확인하겠습니다.
+    volumes:
+      - ./dags:/usr/local/airflow/dags # 현재 경로의 dags 폴더를 컨테이너 dags에 마운트합니다.
+      # Uncomment to include custom plugins
+      # - ./plugins:/usr/local/airflow/plugins
+    ports:
+      - "8080:8080"                   # 컨테이너 port 8080을 localhost의 8080으로 맞춰줍니다.
+    command: webserver                  # 다 끝나면 웹서버 명령어로 ui를 띄우네요.
+    healthcheck: # -f 로 webserver pid가 잘 생성이 되었는지 확인합니다.
+      test: [ "CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]" ]
+      interval: 30s  # 30초 마다 하네요.
+      timeout: 30s   # 30초 동안 기다려 주고
+      retries: 3     # 3번 재시도.. 합니다. 자주 죽어서 쓰나봅니다.

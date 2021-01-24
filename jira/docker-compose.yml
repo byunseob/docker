@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  jira:
+    image: atlassian/jira-software
+    container_name: jira
+    volumes:
+      - "jira-data:/var/atlassian/application-data/jira"
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  jira-data:
