@@ -22,8 +22,6 @@ services:
     image: minio/mc
     depends_on:
       - minio
-#    volumes:
-#      - "./hello.txt:/tmp/hello.txt"
     networks:
       mynet:
   s3-client:
@@ -36,3 +34,5 @@ services:
       - minio
     networks:
       mynet:
+
+# https://stackoverflow.com/questions/42616518/minio-hows-bucket-policy-related-to-anonymous-authorized-access
